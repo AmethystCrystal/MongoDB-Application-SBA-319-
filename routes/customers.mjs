@@ -19,7 +19,33 @@ router.get('/:id', async (req, res) => {
 
     if(!result) res.send('Not Found!').status(404) 
     else res.send(result).status(200)
-})
+});
+
+// POST - Create Route - Create a Customer
+router.post('/', async (req, res) => {
+    const collection = await db.collection('customers')
+    const newDoc = req.body; 
+    newDoc.date = new Date(); 
+    const result = await collection.insertOne(newDoc)
+    res.send(result).status(204) 
+});
+
+//UPDATE - PUT/PATCH - update a user
+router.patch('/:id', async (req, res) => {
+    const query = {_id: new ObjectId(req.params.id)}
+    const updates = req.body;
+    const collection = await db.collection('customers')
+    const result = await collection.updateOne(query, { $set: updates });
+    res.send(result).status(200)
+});
+
+//DELETE - DELETE - delete a user
+router.delete("/:id", async (req, res) => {
+    const query = {_id: new ObjectId(req.params.id)}
+    const collection = db.collection('customers')
+    const result = await collection.deleteOne(query)
+    res.send(result).status(200)
+});
 
 
 export default router;
